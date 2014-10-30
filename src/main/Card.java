@@ -36,13 +36,21 @@ public class Card {
 			return cardSuit;
 		}
 		
+		public java.awt.Color getColor() {
+			switch (cardSuit) {
+				case 0:
+				case 3: return java.awt.Color.RED;
+				default: return java.awt.Color.BLACK;
+			}
+		}
+		
 		@Override
 		public String toString() {
 			switch (cardSuit) {
-				case 0: return "♥";
-				case 1: return "♠";
-				case 2: return "♣";
-				case 3: return "♦";
+				case 0: return "\u2665";
+				case 1: return "\u2660";
+				case 2: return "\u2663";
+				case 3: return "\u2666";
 				default: return "?";
 			}
 		}
