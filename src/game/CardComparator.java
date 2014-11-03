@@ -1,13 +1,15 @@
 package game;
 
+import game.Card.CardSuit;
+
 import java.util.Comparator;
 
 final public class CardComparator implements Comparator<Card> {
 
-	final private Card.CardSuit enteringSuit;
-	final private Card.CardSuit trumpSuit;
+	final private CardSuit enteringSuit;
+	final private CardSuit trumpSuit;
 	
-	public CardComparator(Card.CardSuit enteringSuit, Card.CardSuit trumpSuit) {
+	public CardComparator(CardSuit enteringSuit, CardSuit trumpSuit) {
 		this.enteringSuit = enteringSuit;
 		this.trumpSuit = trumpSuit;
 	}
