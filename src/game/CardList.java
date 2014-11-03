@@ -11,8 +11,7 @@ final public class CardList extends AbstractList<Card> {
 	final private List<Card> cardlist;
 	
 	public CardList(Card... cards) {
-		List<Card> tmp = Arrays.asList(cards);
-		cardlist = Collections.unmodifiableList(tmp);
+		cardlist = Collections.unmodifiableList(Arrays.asList(cards));
 	}
 	
 	public CardList(List<Card> list) {
