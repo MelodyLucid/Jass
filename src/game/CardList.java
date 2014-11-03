@@ -2,6 +2,7 @@ package game;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,15 +11,12 @@ final public class CardList extends AbstractList<Card> {
 	final private List<Card> cardlist;
 	
 	public CardList(Card... cards) {
-		ArrayList<Card> tmp = new ArrayList<Card>(cards.length);
-		for (int i = 0; i < cards.length; i++) {
-			tmp.add(cards[i]);
-		}
+		List<Card> tmp = Arrays.asList(cards);
 		cardlist = Collections.unmodifiableList(tmp);
 	}
 	
 	public CardList(List<Card> list) {
-		cardlist = Collections.unmodifiableList(list);
+		cardlist = Collections.unmodifiableList(new ArrayList<Card>(list));
 	}
 	
 	@Override
