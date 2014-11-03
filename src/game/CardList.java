@@ -33,8 +33,7 @@ final public class CardList extends AbstractList<Card> {
 	
 	public CardList removeCard(Card c) {
 		ArrayList<Card> tmp = new ArrayList<Card>();
-		for (int i = 0; i < cardlist.size(); i++) {
-			Card nextCard = cardlist.get(i);
+		for (Card nextCard : cardlist) {
 			if (!c.equals(nextCard)) {
 				tmp.add(c);
 			}
@@ -44,7 +43,7 @@ final public class CardList extends AbstractList<Card> {
 	}
 	
 	public CardList addCard(Card c) {
-		List<Card> tmp = cardlist;
+		ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
 		tmp.add(c);
 		return new CardList(tmp);
 	}
