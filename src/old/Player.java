@@ -1,6 +1,6 @@
-package main;
+package old;
 
-import main.Card.CardSuit;
+import old.Card.CardSuit;
 
 public class Player {
 

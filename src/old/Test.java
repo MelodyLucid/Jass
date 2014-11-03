@@ -1,9 +1,11 @@
-package main;
+package old;
+
 
 import java.util.Arrays;
 
-import main.Card.CardSuit;
-import main.Card.CardValue;
+import old.Card.CardSuit;
+import old.Card.CardValue;
+
 
 public class Test {
 	

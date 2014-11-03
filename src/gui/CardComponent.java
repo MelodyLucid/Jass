@@ -1,6 +1,6 @@
 package gui;
 
-import main.Card;
+import old.Card;
 
 final public class CardComponent implements Comparable<CardComponent> {
 

@@ -1,5 +1,6 @@
 package gui;
 
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.WindowAdapter;
@@ -13,9 +14,10 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import main.Card;
-import main.Card.CardSuit;
-import main.Card.CardValue;
+import old.Card;
+import old.Card.CardSuit;
+import old.Card.CardValue;
+
 
 public class Main {
 

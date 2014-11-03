@@ -1,11 +1,13 @@
-package main;
+package old;
+
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import main.Card.CardSuit;
-import main.Card.CardValue;
+import old.Card.CardSuit;
+import old.Card.CardValue;
+
 
 public class Hand {
 
