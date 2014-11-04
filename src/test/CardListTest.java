@@ -129,7 +129,7 @@ public class CardListTest {
 	 */
 	
 	@Test
-	public void cardListToString() {
+	public void cardListToStringMethod() {
 		CardList cl = CardListHelper.createBasicDeck();
 		System.out.println("=== Ordered version ===");
 		System.out.println(cl);
@@ -150,7 +150,7 @@ public class CardListTest {
 	 */
 	
 	@Test
-	public void cardListEquals() {
+	public void cardListEqualsMethod() {
 		CardList cl1 = CardListHelper.createBasicDeck();
 		CardList cl2 = CardListHelper.createBasicDeck();
 		
@@ -166,7 +166,7 @@ public class CardListTest {
 	 * Checks that the subList method retrieves a proper sub list.
 	 */
 	@Test(expected = IndexOutOfBoundsException.class)
-	public void cardListSubList() {
+	public void cardListSubListMethod() {
 		CardList cl = new CardList(Card.SIX_OF_HEARTS, Card.SEVEN_OF_HEARTS, Card.EIGHT_OF_HEARTS);
 		CardList subList = cl.subList(1, 3);
 		
@@ -182,7 +182,7 @@ public class CardListTest {
 	 * are the same, no card is being swapped.
 	 */
 	@Test
-	public void cardListSwapCards() {
+	public void cardListSwapCardsMethod() {
 		CardList cl = CardListHelper.createBasicDeck();
 		Random rdn = new Random();
 		int index1 = rdn.nextInt(cl.size());
@@ -201,6 +201,19 @@ public class CardListTest {
 		
 		cl = cl.swapCards(index, index);
 		assertEquals(cl.get(index), c);
+	}
+	
+	/**
+	 * Checks hide() method.
+	 */
+	@Test
+	public void cardListHideMethod() {
+		CardList deck = CardListHelper.createBasicDeck();
+		CardList hiddenDeck = deck.hide();
+		
+		for (Card card : hiddenDeck) {
+			assertEquals(card, Card.UNKNOWN_CARD);
+		}
 	}
 	
 	/**

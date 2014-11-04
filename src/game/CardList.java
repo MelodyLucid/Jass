@@ -81,6 +81,15 @@ final public class CardList extends AbstractList<Card> {
 		return new CardList(tmp);
 	}
 	
+	public CardList hide() {
+		int n = size();
+		List<Card> tmp = new ArrayList<Card>(n);
+		for (int i = 0; i < n; i++) {
+			tmp.add(Card.UNKNOWN_CARD);
+		}
+		return new CardList(tmp);
+	}
+	
 	@Override
 	public CardList subList(int fromIndex, int toIndex) {
 		ArrayList<Card> tmp = new ArrayList<Card>(cardlist.subList(fromIndex, toIndex));
