@@ -89,6 +89,9 @@ final public class CardList extends AbstractList<Card> {
 	
 	@Override
 	public String toString() {
+		if (isEmpty()) {
+			return "[]";
+		}
 		String str = "[";
 		for (Card c : cardlist) {
 			str += c.toString() + ", ";
