@@ -43,14 +43,16 @@ final public class CardList extends AbstractList<Card> {
 	}
 	
 	public CardList removed(Card c) {
-		ArrayList<Card> tmp = new ArrayList<Card>(cardlist.size() - 1);
-		for (Card nextCard : cardlist) {
-			if (!c.equals(nextCard)) {
-				tmp.add(nextCard);
-			}
-		}
+		ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
+        tmp.remove(c);
 		return new CardList(tmp, 0);
 	}
+
+    public CardList removed(Collection<Card> col) {
+        ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
+        tmp.removeAll(col);
+        return new CardList(tmp, 0);
+    }
 	
 	public CardList swapped(int index1, int index2) {
 		if (index1 < 0 || index1 > size() || index2 < 0 || index2 > size()) {
@@ -84,9 +86,41 @@ final public class CardList extends AbstractList<Card> {
 	}
 
 	public CardList take(int fromIndex, int toIndex) {
-		ArrayList<Card> tmp = new ArrayList<Card>(cardlist.subList(fromIndex, toIndex));
+        int f = Math.max(Math.min(fromIndex, toIndex), 0);
+        int t = Math.min(Math.max(fromIndex, toIndex), cardlist.size());
+		ArrayList<Card> tmp = new ArrayList<Card>(cardlist.subList(f, t));
 		return new CardList(tmp, 0);
 	}
+
+    public CardList take(int count) {
+        return take(0, count);
+    }
+
+    public CardList drop(int count) {
+        return take(count, cardlist.size());
+    }
+
+    public List<CardList> split(int count) {
+        if (count <= 1)
+            return Collections.singletonList(this);
+        ArrayList<CardList> tmp = new ArrayList<CardList>(count);
+        int length = cardlist.size() / count;
+        for (int i = 0; i < count; ++i)
+            tmp.add(take(i * length, (i + 1) * length));
+        return tmp;
+    }
+
+    public CardList shuffled() {
+        ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
+        Collections.shuffle(tmp);
+        return new CardList(tmp, 0);
+    }
+
+    public CardList reversed() {
+        ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
+        Collections.reverse(tmp);
+        return new CardList(tmp, 0);
+    }
 	
 	@Override
 	public String toString() {
