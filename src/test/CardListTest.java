@@ -77,6 +77,21 @@ public class CardListTest {
 	}
 	
 	/**
+	 * Checks addCard(Card) method.
+	 */
+	@Test(expected = UnsupportedOperationException.class)
+	public void cardListAddAllMethod() {
+		CardList cl1 = new CardList(Card.ACE_OF_CLUBS, Card.KING_OF_CLUBS, Card.QUEEN_OF_CLUBS);
+		CardList cl2 = new CardList(Card.ACE_OF_DIAMONDS, Card.KING_OF_DIAMONDS, Card.QUEEN_OF_DIAMONDS);
+		
+		CardList cl = cl1.addCardList(cl2);
+		
+		assertTrue(cl.containsAll(cl1));
+		assertTrue(cl.containsAll(cl2));
+		cl.addAll(cl2);	// should not be supported
+	}
+	
+	/**
 	 * Checks removeCard(Card) method.
 	 */
 	@Test(expected = UnsupportedOperationException.class)
@@ -145,6 +160,21 @@ public class CardListTest {
 		cl2 = CardListHelper.shuffleCardList(cl2);
 		
 		assertFalse(cl1.equals(cl2));
+	}
+	
+	/**
+	 * Checks that the subList method retrieves a proper sub list.
+	 */
+	@Test(expected = IndexOutOfBoundsException.class)
+	public void cardListSubList() {
+		CardList cl = new CardList(Card.SIX_OF_HEARTS, Card.SEVEN_OF_HEARTS, Card.EIGHT_OF_HEARTS);
+		CardList subList = cl.subList(1, 3);
+		
+		assertTrue(subList.size() == 2);
+		assertEquals(cl.get(1), subList.get(0));
+		assertEquals(cl.get(2), subList.get(1));
+		
+		cl.subList(0, 4);
 	}
 	
 	/**
@@ -221,6 +251,36 @@ public class CardListTest {
 		}
 		if (count > 18) {
 			fail("Half of the cards are ordered.");
+		}
+	}
+	
+	/**
+	 * Checks that the hands are well dealt.
+	 */
+	@Test
+	public void cardListHelperDealHands() {
+		CardList deck = CardListHelper.createBasicDeck();
+		CardList[] hands = CardListHelper.dealCards(deck);
+		
+		for (CardList hand : hands) {
+			System.out.println(hand);
+		}
+		
+		System.out.println();
+		
+		CardList nineCardsDeck = deck.subList(0, 9);
+		hands = CardListHelper.dealCards(nineCardsDeck);
+		
+		for (CardList hand : hands) {
+			System.out.println(hand);
+		}
+		System.out.println();
+		
+		CardList sevenCardsDeck = deck.subList(9, 16);
+		hands = CardListHelper.dealCards(sevenCardsDeck);
+		
+		for (CardList hand : hands) {
+			System.out.println(hand);
 		}
 	}
 }

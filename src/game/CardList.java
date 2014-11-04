@@ -42,6 +42,12 @@ final public class CardList extends AbstractList<Card> {
 		return new CardList(tmp);
 	}
 	
+	public CardList addCardList(CardList cl) {
+		ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
+		tmp.addAll(tmp.size(), new ArrayList<Card>(cl.cardlist));
+		return new CardList(tmp);
+	}
+	
 	public CardList removeCard(Card c) {
 		ArrayList<Card> tmp = new ArrayList<Card>();
 		for (Card nextCard : cardlist) {
@@ -72,6 +78,12 @@ final public class CardList extends AbstractList<Card> {
 			}
 		}
 		
+		return new CardList(tmp);
+	}
+	
+	@Override
+	public CardList subList(int fromIndex, int toIndex) {
+		ArrayList<Card> tmp = new ArrayList<Card>(cardlist.subList(fromIndex, toIndex));
 		return new CardList(tmp);
 	}
 	

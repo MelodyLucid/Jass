@@ -26,4 +26,42 @@ public class CardListHelper {
 		Collections.sort(tmp);
 		return new CardList(tmp);
 	}
+	
+	public static CardList[] dealCards(CardList deck) {
+		CardList[] hands = new CardList[4];
+		for (int i = 0; i < hands.length; i++) {
+			hands[i] = new CardList();
+		}
+		
+		if (deck.size() > 11) {
+			int i = 0, j = 0;
+			for (; j < deck.size()-2; j += 3) {
+				CardList threeCards = deck.subList(j, j + 3);
+				hands[i] = hands[i].addCardList(threeCards);
+				i = (i + 1) % 4;
+			}
+			for (; j < deck.size(); j++) {
+				hands[i] = hands[i].addCard(deck.get(j));
+				i = (i + 1) % 4;
+			}
+			return hands;
+		}
+		if (deck.size() < 8) {
+			int i = 0;
+			for (Card card : deck) {
+				hands[i] = hands[i].addCard(card);
+				i = (i + 1) % 4;
+			}
+			
+			return hands;
+		}
+		int i = 0, j = 0;
+		for (; j < deck.size()-1; j += 2) {
+			CardList twoCards = deck.subList(j, j + 2);
+			hands[i] = hands[i].addCardList(twoCards);
+			i = (i + 1) % 4;
+		}
+		hands[i] = hands[i].addCard(deck.get(j));
+		return hands;
+	}
 }
