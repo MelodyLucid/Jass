@@ -1,11 +1,54 @@
 package game;
 
-final public class Card implements Comparable<Card> {
+public enum Card {
 
+	SIX_OF_HEARTS(CardSuit.HEARTS, CardValue.SIX),
+	SEVEN_OF_HEARTS(CardSuit.HEARTS, CardValue.SEVEN),
+	EIGHT_OF_HEARTS(CardSuit.HEARTS, CardValue.EIGHT),
+	NINE_OF_HEARTS(CardSuit.HEARTS, CardValue.NINE),
+	TEN_OF_HEARTS(CardSuit.HEARTS, CardValue.TEN),
+	JACK_OF_HEARTS(CardSuit.HEARTS, CardValue.JACK),
+	QUEEN_OF_HEARTS(CardSuit.HEARTS, CardValue.QUEEN),
+	KING_OF_HEARTS(CardSuit.HEARTS, CardValue.KING),
+	ACE_OF_HEARTS(CardSuit.HEARTS, CardValue.ACE),
+	
+	SIX_OF_SPADES(CardSuit.SPADES, CardValue.SIX),
+	SEVEN_OF_SPADES(CardSuit.SPADES, CardValue.SEVEN),
+	EIGHT_OF_SPADES(CardSuit.SPADES, CardValue.EIGHT),
+	NINE_OF_SPADES(CardSuit.SPADES, CardValue.NINE),
+	TEN_OF_SPADES(CardSuit.SPADES, CardValue.TEN),
+	JACK_OF_SPADES(CardSuit.SPADES, CardValue.JACK),
+	QUEEN_OF_SPADES(CardSuit.SPADES, CardValue.QUEEN),
+	KING_OF_SPADES(CardSuit.SPADES, CardValue.KING),
+	ACE_OF_SPADES(CardSuit.SPADES, CardValue.ACE),
+	
+	SIX_OF_CLUBS(CardSuit.CLUBS, CardValue.SIX),
+	SEVEN_OF_CLUBS(CardSuit.CLUBS, CardValue.SEVEN),
+	EIGHT_OF_CLUBS(CardSuit.CLUBS, CardValue.EIGHT),
+	NINE_OF_CLUBS(CardSuit.CLUBS, CardValue.NINE),
+	TEN_OF_CLUBS(CardSuit.CLUBS, CardValue.TEN),
+	JACK_OF_CLUBS(CardSuit.CLUBS, CardValue.JACK),
+	QUEEN_OF_CLUBS(CardSuit.CLUBS, CardValue.QUEEN),
+	KING_OF_CLUBS(CardSuit.CLUBS, CardValue.KING),
+	ACE_OF_CLUBS(CardSuit.CLUBS, CardValue.ACE),
+	
+	SIX_OF_DIAMONDS(CardSuit.DIAMONDS, CardValue.SIX),
+	SEVEN_OF_DIAMONDS(CardSuit.DIAMONDS, CardValue.SEVEN),
+	EIGHT_OF_DIAMONDS(CardSuit.DIAMONDS, CardValue.EIGHT),
+	NINE_OF_DIAMONDS(CardSuit.DIAMONDS, CardValue.NINE),
+	TEN_OF_DIAMONDS(CardSuit.DIAMONDS, CardValue.TEN),
+	JACK_OF_DIAMONDS(CardSuit.DIAMONDS, CardValue.JACK),
+	QUEEN_OF_DIAMONDS(CardSuit.DIAMONDS, CardValue.QUEEN),
+	KING_OF_DIAMONDS(CardSuit.DIAMONDS, CardValue.KING),
+	ACE_OF_DIAMONDS(CardSuit.DIAMONDS, CardValue.ACE),
+	
+	UNKNOWN_CARD(CardSuit.UNKNOWN, CardValue.UNKNOWN);
+	
+	final public static int TOTAL_NUMBER = values().length - 1;
 	final private CardSuit suit;
 	final private CardValue value;
 	
-	public Card(CardSuit suit, CardValue value) {
+	private Card(CardSuit suit, CardValue value) {
 		this.suit = suit;
 		this.value = value;
 	}
@@ -15,7 +58,7 @@ final public class Card implements Comparable<Card> {
 			switch (value) {
 				case JACK : return 20;	// Buur
 				case NINE : return 14;	// Nel
-				default:	// do nothing
+				default:
 			}
 		}
 		switch (value) {
@@ -52,18 +95,28 @@ final public class Card implements Comparable<Card> {
 		return value.name() + " of " + suit.name();
 	}
 	
+	public static Card getCard(CardSuit suit, CardValue value) {
+		for (int i = 0; i < values().length; i++) {
+			if (values()[i].getSuit() == suit && values()[i].getValue() == value) {
+				return values()[i];
+			}
+		}
+		return UNKNOWN_CARD;
+	}
+	
 	
 	public enum CardSuit {
 		HEARTS(0), SPADES(1), CLUBS(2), DIAMONDS(3),
 		UNKNOWN(-1);
 		
-		private int cardSuit;
+		final public static int NUMBERS_OF_SUIT = values().length - 1;
+		final private int cardSuit;
 
 		private CardSuit(int suit) {
 			this.cardSuit = suit;
 		}
 
-		public int getCardValue() {
+		public int getIntValue() {
 			return cardSuit;
 		}
 		
@@ -91,9 +144,10 @@ final public class Card implements Comparable<Card> {
 		SIX(6), SEVEN(7), EIGHT(8), NINE(9), TEN(10),
 		JACK(11), QUEEN(12), KING(13), ACE(14),
 		UNKNOWN(-1);
-
-		private int cardValue;
-
+		
+		final public static int NUMBERS_OF_VALUES = values().length - 1;
+		final private int cardValue;
+		
 		private CardValue(int value) {
 			this.cardValue = value;
 		}
@@ -101,42 +155,22 @@ final public class Card implements Comparable<Card> {
 		@Override
 		public String toString() {
 			switch (cardValue) {
-				case 11 : return "J";
-				case 12 : return "Q";
-				case 13 : return "K";
-				case 14 : return "A";
-				default: return Integer.toString(cardValue);
+				case 10: return "10";
+				case 11 : return "J ";
+				case 12 : return "Q ";
+				case 13 : return "K ";
+				case 14 : return "A ";
+				default: return Integer.toString(cardValue) + " ";
 			}
+		}
+		
+		public int getIntValue() {
+			return cardValue;
 		}
 	}
 	
 	@Override
 	public String toString() {
-		return value.toString() + " " + suit.toString().charAt(0);
-	}
-	
-	@Override
-	public Card clone() {
-		return new Card(this.suit, this.value);
-	}
-	
-	@Override
-	public boolean equals(Object o) {
-		if (o == null || o.getClass() != this.getClass()) {
-			return false;
-		}
-		
-		return ((Card) o).suit == this.suit && ((Card) o).value == this.value;
-	}
-	
-	@Override
-	public int compareTo(Card c) {
-		if (c == null || this.value.cardValue > c.value.cardValue) {
-			return 1;
-		}
-		if (this.value.cardValue < c.value.cardValue) {
-			return -1;
-		}
-		return 0;
+		return value.toString() + suit.toString().charAt(0);
 	}
 }
