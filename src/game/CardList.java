@@ -10,7 +10,7 @@ final public class CardList extends AbstractList<Card> {
         cardlist = Collections.unmodifiableList(cards);
     }
 	
-	public CardList(List<Card> list) {
+	public CardList(Collection<Card> list) {
 		this(new ArrayList<Card>(list), 0);
 	}
 
@@ -100,6 +100,14 @@ final public class CardList extends AbstractList<Card> {
         return take(count, cardlist.size());
     }
 
+    public Card head() {
+        return cardlist.isEmpty() ? null : cardlist.get(0);
+    }
+
+    public CardList tail() {
+        return drop(1);
+    }
+
     public List<CardList> split(int count) {
         if (count <= 1)
             return Collections.singletonList(this);
@@ -107,6 +115,21 @@ final public class CardList extends AbstractList<Card> {
         int length = cardlist.size() / count;
         for (int i = 0; i < count; ++i)
             tmp.add(take(i * length, (i + 1) * length));
+        return tmp;
+    }
+
+    public CardList withSuit(Card.CardSuit suit) {
+        ArrayList<Card> tmp = new ArrayList<Card>(cardlist.size());
+        for (Card c : cardlist)
+            if (c.getSuit() == suit)
+                tmp.add(c);
+        return new CardList(tmp, 0);
+    }
+
+    public Map<Card.CardSuit, CardList> splitBySuit() {
+        Map<Card.CardSuit, CardList> tmp = new TreeMap<Card.CardSuit, CardList>();
+        for (Card.CardSuit s : Card.CardSuit.values())
+            tmp.put(s, withSuit(s));
         return tmp;
     }
 
