@@ -3,8 +3,6 @@ package game;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import game.Card;
-
 public class CardListHelper {
 
 	public static CardList createBasicDeck() {
@@ -36,12 +34,12 @@ public class CardListHelper {
 		if (deck.size() > 11) {
 			int i = 0, j = 0;
 			for (; j < deck.size()-2; j += 3) {
-				CardList threeCards = deck.subList(j, j + 3);
-				hands[i] = hands[i].addCardList(threeCards);
+				CardList threeCards = deck.take(j, j + 3);
+				hands[i] = hands[i].added(threeCards);
 				i = (i + 1) % 4;
 			}
 			for (; j < deck.size(); j++) {
-				hands[i] = hands[i].addCard(deck.get(j));
+				hands[i] = hands[i].added(deck.get(j));
 				i = (i + 1) % 4;
 			}
 			return hands;
@@ -49,7 +47,7 @@ public class CardListHelper {
 		if (deck.size() < 8) {
 			int i = 0;
 			for (Card card : deck) {
-				hands[i] = hands[i].addCard(card);
+				hands[i] = hands[i].added(card);
 				i = (i + 1) % 4;
 			}
 			
@@ -57,11 +55,11 @@ public class CardListHelper {
 		}
 		int i = 0, j = 0;
 		for (; j < deck.size()-1; j += 2) {
-			CardList twoCards = deck.subList(j, j + 2);
-			hands[i] = hands[i].addCardList(twoCards);
+			CardList twoCards = deck.take(j, j + 2);
+			hands[i] = hands[i].added(twoCards);
 			i = (i + 1) % 4;
 		}
-		hands[i] = hands[i].addCard(deck.get(j));
+		hands[i] = hands[i].added(deck.get(j));
 		return hands;
 	}
 }

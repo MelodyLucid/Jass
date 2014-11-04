@@ -61,13 +61,13 @@ final public class Match {
 		if (!playerHand.contains(cardPlayed)) {
 			throw new IllegalArgumentException("Player " + turn + " does not have card " + cardPlayed);
 		}
-		playerHand = playerHand.removeCard(cardPlayed);
+		playerHand = playerHand.removed(cardPlayed);
 		
 		List<CardList> updatedHands = new ArrayList<CardList>(hands);
 		updatedHands.remove(turn);
 		updatedHands.add(turn, playerHand);
 		
-		CardList updatedFold = fold.addCard(cardPlayed);
+		CardList updatedFold = fold.added(cardPlayed);
 		int updatedFoldPoints = foldPoints + cardPlayed.getPoints(trumpSuit == cardPlayed.getSuit());
 		
 		if (updatedFold.size() == 4) {
@@ -108,7 +108,7 @@ final public class Match {
 			if (i == player) {
 				visibleHands.add(hands.get(i));
 			} else {
-				visibleHands.add(hands.get(i).hide());
+				visibleHands.add(hands.get(i).hidden());
 			}
 		}
 		return new Match(visibleHands, fold, trumpSuit, foldPoints, teamPoints, turn, starter);

@@ -1,10 +1,6 @@
 package game;
 
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 final public class CardList extends AbstractList<Card> {
 
@@ -32,30 +28,31 @@ final public class CardList extends AbstractList<Card> {
 		return cardlist.size();
 	}
 	
-	public CardList addCard(Card c) {
-		ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
+	public CardList added(Card c) {
+		ArrayList<Card> tmp = new ArrayList<Card>(cardlist.size() + 1);
+        tmp.addAll(cardlist);
 		tmp.add(c);
 		return new CardList(tmp, 0);
 	}
 	
-	public CardList addCardList(CardList cl) {
-		ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
-		tmp.addAll(tmp.size(), new ArrayList<Card>(cl.cardlist));
+	public CardList added(Collection<Card> col) {
+		ArrayList<Card> tmp = new ArrayList<Card>(cardlist.size() + col.size());
+        tmp.addAll(cardlist);
+		tmp.addAll(col);
 		return new CardList(tmp, 0);
 	}
 	
-	public CardList removeCard(Card c) {
-		ArrayList<Card> tmp = new ArrayList<Card>();
+	public CardList removed(Card c) {
+		ArrayList<Card> tmp = new ArrayList<Card>(cardlist.size() - 1);
 		for (Card nextCard : cardlist) {
 			if (!c.equals(nextCard)) {
 				tmp.add(nextCard);
 			}
 		}
-		
 		return new CardList(tmp, 0);
 	}
 	
-	public CardList swapCards(int index1, int index2) {
+	public CardList swapped(int index1, int index2) {
 		if (index1 < 0 || index1 > size() || index2 < 0 || index2 > size()) {
 			throw new IndexOutOfBoundsException("Invalid indexes: " + index1 + ", " + index2
 					+ " expected range: [0, " + size() +"]");
@@ -77,7 +74,7 @@ final public class CardList extends AbstractList<Card> {
 		return new CardList(tmp, 0);
 	}
 	
-	public CardList hide() {
+	public CardList hidden() {
 		int n = size();
 		List<Card> tmp = new ArrayList<Card>(n);
 		for (int i = 0; i < n; i++) {
@@ -85,9 +82,8 @@ final public class CardList extends AbstractList<Card> {
 		}
 		return new CardList(tmp, 0);
 	}
-	
-	@Override
-	public CardList subList(int fromIndex, int toIndex) {
+
+	public CardList take(int fromIndex, int toIndex) {
 		ArrayList<Card> tmp = new ArrayList<Card>(cardlist.subList(fromIndex, toIndex));
 		return new CardList(tmp, 0);
 	}

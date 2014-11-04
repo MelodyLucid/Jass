@@ -64,27 +64,27 @@ public class CardListTest {
 	}
 	
 	/**
-	 * Checks addCard(Card) method.
+	 * Checks added(Card) method.
 	 */
 	@Test(expected = UnsupportedOperationException.class)
 	public void cardListAddMethod() {
 		CardList cl = new CardList(Card.ACE_OF_CLUBS, Card.KING_OF_CLUBS, Card.QUEEN_OF_CLUBS);
 		
-		cl = cl.addCard(Card.SIX_OF_CLUBS);
+		cl = cl.added(Card.SIX_OF_CLUBS);
 		
 		assertTrue(cl.contains(Card.SIX_OF_CLUBS));
 		cl.add(Card.SIX_OF_DIAMONDS);	// should not be supported
 	}
 	
 	/**
-	 * Checks addCard(Card) method.
+	 * Checks added(Card) method.
 	 */
 	@Test(expected = UnsupportedOperationException.class)
 	public void cardListAddAllMethod() {
 		CardList cl1 = new CardList(Card.ACE_OF_CLUBS, Card.KING_OF_CLUBS, Card.QUEEN_OF_CLUBS);
 		CardList cl2 = new CardList(Card.ACE_OF_DIAMONDS, Card.KING_OF_DIAMONDS, Card.QUEEN_OF_DIAMONDS);
 		
-		CardList cl = cl1.addCardList(cl2);
+		CardList cl = cl1.added(cl2);
 		
 		assertTrue(cl.containsAll(cl1));
 		assertTrue(cl.containsAll(cl2));
@@ -98,13 +98,13 @@ public class CardListTest {
 	public void cardListRemoveMethod() {
 		CardList cl = new CardList(Card.ACE_OF_CLUBS, Card.KING_OF_CLUBS, Card.QUEEN_OF_CLUBS);
 		
-		cl = cl.removeCard(Card.QUEEN_OF_CLUBS);
+		cl = cl.removed(Card.QUEEN_OF_CLUBS);
 		assertFalse(cl.contains(Card.QUEEN_OF_CLUBS));
 		
-		cl = cl.removeCard(Card.NINE_OF_DIAMONDS);
+		cl = cl.removed(Card.NINE_OF_DIAMONDS);
 		assertFalse(cl.contains(Card.NINE_OF_DIAMONDS));
 		
-		cl.remove(Card.ACE_OF_CLUBS);	// should not be supported
+		cl.removed(Card.ACE_OF_CLUBS);	// should not be supported
 	}
 	
 	/**
@@ -117,10 +117,10 @@ public class CardListTest {
 		CardList cl = new CardList();
 		assertTrue(cl.isEmpty());
 		
-		cl = cl.addCard(c);
+		cl = cl.added(c);
 		assertFalse(cl.isEmpty());
 		
-		cl = cl.removeCard(c);
+		cl = cl.removed(c);
 		assertTrue(cl.isEmpty());
 	}
 	
@@ -168,7 +168,7 @@ public class CardListTest {
 	@Test(expected = IndexOutOfBoundsException.class)
 	public void cardListSubListMethod() {
 		CardList cl = new CardList(Card.SIX_OF_HEARTS, Card.SEVEN_OF_HEARTS, Card.EIGHT_OF_HEARTS);
-		CardList subList = cl.subList(1, 3);
+		CardList subList = cl.take(1, 3);
 		
 		assertTrue(subList.size() == 2);
 		assertEquals(cl.get(1), subList.get(0));
@@ -191,7 +191,7 @@ public class CardListTest {
 		Card c1 = cl.get(index1);
 		Card c2 = cl.get(index2);
 		
-		cl = cl.swapCards(index1, index2);
+		cl = cl.swapped(index1, index2);
 		assertEquals(cl.get(index1), c2);
 		assertEquals(cl.get(index2), c1);
 		
@@ -199,17 +199,17 @@ public class CardListTest {
 		
 		Card c = cl.get(index);
 		
-		cl = cl.swapCards(index, index);
+		cl = cl.swapped(index, index);
 		assertEquals(cl.get(index), c);
 	}
 	
 	/**
-	 * Checks hide() method.
+	 * Checks hidden() method.
 	 */
 	@Test
 	public void cardListHideMethod() {
 		CardList deck = CardListHelper.createBasicDeck();
-		CardList hiddenDeck = deck.hide();
+		CardList hiddenDeck = deck.hidden();
 		
 		for (Card card : hiddenDeck) {
 			assertEquals(card, Card.UNKNOWN_CARD);
@@ -281,7 +281,7 @@ public class CardListTest {
 		
 		System.out.println();
 		
-		CardList nineCardsDeck = deck.subList(0, 9);
+		CardList nineCardsDeck = deck.take(0, 9);
 		hands = CardListHelper.dealCards(nineCardsDeck);
 		
 		for (CardList hand : hands) {
@@ -289,7 +289,7 @@ public class CardListTest {
 		}
 		System.out.println();
 		
-		CardList sevenCardsDeck = deck.subList(9, 16);
+		CardList sevenCardsDeck = deck.take(9, 16);
 		hands = CardListHelper.dealCards(sevenCardsDeck);
 		
 		for (CardList hand : hands) {
