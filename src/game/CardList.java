@@ -9,14 +9,18 @@ import java.util.List;
 final public class CardList extends AbstractList<Card> {
 
 	final private List<Card> cardlist;
-	
-	public CardList(Card... cards) {
-		cardlist = Collections.unmodifiableList(Arrays.asList(cards));
-	}
+
+    private CardList(List<Card> cards, int dummy) {
+        cardlist = Collections.unmodifiableList(cards);
+    }
 	
 	public CardList(List<Card> list) {
-		cardlist = Collections.unmodifiableList(new ArrayList<Card>(list));
+		this(new ArrayList<Card>(list), 0);
 	}
+
+    public CardList(Card... cards) {
+        this(Arrays.asList(cards));
+    }
 	
 	@Override
 	public Card get(int i) {
@@ -39,13 +43,13 @@ final public class CardList extends AbstractList<Card> {
 	public CardList addCard(Card c) {
 		ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
 		tmp.add(c);
-		return new CardList(tmp);
+		return new CardList(tmp, 0);
 	}
 	
 	public CardList addCardList(CardList cl) {
 		ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
 		tmp.addAll(tmp.size(), new ArrayList<Card>(cl.cardlist));
-		return new CardList(tmp);
+		return new CardList(tmp, 0);
 	}
 	
 	public CardList removeCard(Card c) {
@@ -56,7 +60,7 @@ final public class CardList extends AbstractList<Card> {
 			}
 		}
 		
-		return new CardList(tmp);
+		return new CardList(tmp, 0);
 	}
 	
 	public CardList swapCards(int index1, int index2) {
@@ -78,7 +82,7 @@ final public class CardList extends AbstractList<Card> {
 			}
 		}
 		
-		return new CardList(tmp);
+		return new CardList(tmp, 0);
 	}
 	
 	public CardList hide() {
@@ -87,13 +91,13 @@ final public class CardList extends AbstractList<Card> {
 		for (int i = 0; i < n; i++) {
 			tmp.add(Card.UNKNOWN_CARD);
 		}
-		return new CardList(tmp);
+		return new CardList(tmp, 0);
 	}
 	
 	@Override
 	public CardList subList(int fromIndex, int toIndex) {
 		ArrayList<Card> tmp = new ArrayList<Card>(cardlist.subList(fromIndex, toIndex));
-		return new CardList(tmp);
+		return new CardList(tmp, 0);
 	}
 	
 	@Override
