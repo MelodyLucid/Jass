@@ -22,21 +22,25 @@ final public class Match {
 	}
 	
 	public Match(List<CardList> hands, CardList fold, CardSuit trumpSuit, int foldPoints, int[] teamPoints, int turn, int starter) {
-		if (hands == null || hands.size() != 4) {
-			throw new IllegalArgumentException("Hands argument invalid, expected List of size 4.");
+		if (hands == null || fold == null || teamPoints == null) {
+			throw new NullPointerException();
 		}
-		if (teamPoints == null || teamPoints.length != 2) {
-			throw new IllegalArgumentException("TeamPoints argument invalid, expected Array of length 2.");
+		if (hands.size() != 4) {
+			throw new IllegalArgumentException("Invalid hands size: " + hands.size() + ", expected: 4.");
+		}
+		if (teamPoints.length != 2) {
+			throw new IllegalArgumentException("Invalid teamPoints length: " + teamPoints.length + ", expected: 2.");
 		}
 		if (starter < 0 || starter > 3) {
-			throw new IllegalArgumentException("Expected starter between 0 and 3.");
+			throw new IllegalArgumentException("Invalid starter: " + starter + ", range expected: [0, 3]" );
 		}
 		if (turn < 0 || turn > 3) {
-			throw new IllegalArgumentException("Expected starter between 0 and 3.");
+			throw new IllegalArgumentException("Invalid turn: " + turn + ", range expected: [0, 3]");
 		}
 		if (foldPoints < 0 || foldPoints > 56) {
-			throw new IllegalArgumentException("Expected foldPoints between 0 and 56.");
+			throw new IllegalArgumentException("Invalid foldPoints: " + foldPoints + ", range expected: [0, 56]");
 		}
+		
 		this.hands = Collections.unmodifiableList(new ArrayList<CardList>(hands));
 		this.fold = fold;
 		this.trumpSuit = trumpSuit;
@@ -46,9 +50,56 @@ final public class Match {
 		this.starter = starter;
 	}
 	
+	public Match update(Card cardPlayed) {
+		if (isOver()) {
+			return this;
+		}
+		if (cardPlayed == null) {
+			throw new NullPointerException();
+		}
+		
+		CardList playerHand = hands.get(turn).removeCard(cardPlayed);
+		if (!playerHand.contains(cardPlayed)) {
+			throw new IllegalArgumentException("Player " + turn + " does not have card " + cardPlayed);
+		}
+		
+		List<CardList> updatedHands = new ArrayList<CardList>(hands);
+		updatedHands.add(turn, playerHand);
+		
+		CardList updatedFold = fold.addCard(cardPlayed);
+		int updatedFoldPoints = foldPoints + cardPlayed.getPoints(trumpSuit == cardPlayed.getSuit());
+		
+		if (updatedFold.size() == 4) {
+			CardComparator cc = getCardComparator(updatedFold.get(0).getSuit());
+			
+			Card best = updatedFold.get(0);
+			int winner = 0;
+			for (int i = 0; i < updatedFold.size(); i++) {
+				Card card = updatedFold.get(i);
+				if (cc.compare(best, card) < 0) {
+					best = card;
+					winner = i;
+				}
+			}
+			winner = (winner + starter) % 4;
+			
+			int[] updatedTeamPoints = Arrays.copyOf(teamPoints, 2);
+			updatedTeamPoints[(winner == 0)  || (winner == 2) ? 0 : 1] += updatedFoldPoints;
+			
+			updatedFold = new CardList();
+			updatedFoldPoints = 0;
+			int updatedTurn = winner;
+			int updatedStarter = winner;
+			
+			return new Match(updatedHands, updatedFold, trumpSuit, updatedFoldPoints, updatedTeamPoints, updatedTurn, updatedStarter);
+		}
+		
+		return new Match(updatedHands, updatedFold, trumpSuit, updatedFoldPoints, teamPoints, (turn+1) % 4, starter);
+	}
+	
 	public CardList getHand(int player) {
 		if (player < 0 || player > 3) {
-			throw new IllegalArgumentException("Expected player between 0 and 3.");
+			return null;
 		}
 		return hands.get(player);
 	}
@@ -62,38 +113,10 @@ final public class Match {
 	}
 	
 	public int getTeamPoints(int team) {
-		return teamPoints[team];
-	}
-	
-	public Match update(Card cardPlayed) {
-		CardList updatedFold = fold.addCard(cardPlayed);
-		CardList playerHand = hands.get(turn).removeCard(cardPlayed);
-		List<CardList> updatedHands = new ArrayList<CardList>(hands);
-		updatedHands.add(turn, playerHand);
-		int updatedFoldPoints = foldPoints + cardPlayed.getPoints(trumpSuit == cardPlayed.getSuit());
-		if (updatedFold.size() == 4) {
-			CardComparator cc = getCardComparator(updatedFold.get(0).getSuit());
-			Card best = updatedFold.get(0);
-			int winner = 0;
-			for (int i = 0; i < updatedFold.size(); i++) {
-				Card card = updatedFold.get(i);
-				if (cc.compare(best, card) < 0) {
-					best = card;
-					winner = i;
-				}
-			}
-			winner = (winner + starter) % 4;
-			int[] updatedTeamPoints = Arrays.copyOf(teamPoints, 2);
-			updatedTeamPoints[(winner == 0)  || (winner == 2) ? 0 : 1] += updatedFoldPoints;
-
-			updatedFold = new CardList();
-			updatedFoldPoints = 0;
-			int updatedTurn = winner;
-			int updatedStarter = winner;
-			return new Match(updatedHands, updatedFold, trumpSuit, updatedFoldPoints, updatedTeamPoints, updatedTurn, updatedStarter);
+		if (team < 0 || team > 2) {
+			return -1;
 		}
-		
-		return new Match(updatedHands, updatedFold, trumpSuit, updatedFoldPoints, teamPoints, (turn+1) % 4, starter);
+		return teamPoints[team];
 	}
 	
 	public boolean isOver() {
@@ -107,5 +130,26 @@ final public class Match {
 	
 	public CardComparator getCardComparator(CardSuit enteringSuit) {
 		return new CardComparator(enteringSuit, trumpSuit);
+	}
+	
+	@Override
+	public String toString() {
+		String handsStr = "\n=== Hands ===\n";
+		for (int i = 0; i < hands.size(); i++) {
+			CardList h = hands.get(i);
+			handsStr += "Player " + i + ": " + h.toString() + "\n";
+		}
+		String foldStr = "\nFold: " + fold.toString();
+		String teamPointsStr = "\nTeam points: " + Arrays.toString(teamPoints);
+		
+		String matchStr = "Match " + (isOver() ? "current" : "over") + "\n"
+				+ teamPointsStr
+				+ handsStr
+				+ foldStr
+				+ "\nTrumpSuit: " + trumpSuit.name()
+				+ "\nTurn: Player " + turn
+				+ "\nStarter: Player " + starter;
+		
+		return matchStr;
 	}
 }
