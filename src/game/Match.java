@@ -57,13 +57,14 @@ final public class Match {
 		if (cardPlayed == null) {
 			throw new NullPointerException();
 		}
-		
-		CardList playerHand = hands.get(turn).removeCard(cardPlayed);
+		CardList playerHand = hands.get(turn);
 		if (!playerHand.contains(cardPlayed)) {
 			throw new IllegalArgumentException("Player " + turn + " does not have card " + cardPlayed);
 		}
+		playerHand = playerHand.removeCard(cardPlayed);
 		
 		List<CardList> updatedHands = new ArrayList<CardList>(hands);
+		updatedHands.remove(turn);
 		updatedHands.add(turn, playerHand);
 		
 		CardList updatedFold = fold.addCard(cardPlayed);
@@ -142,7 +143,7 @@ final public class Match {
 		String foldStr = "\nFold: " + fold.toString();
 		String teamPointsStr = "\nTeam points: " + Arrays.toString(teamPoints);
 		
-		String matchStr = "Match " + (isOver() ? "current" : "over") + "\n"
+		String matchStr = "Match " + (isOver() ? "over" : "current") + "\n"
 				+ teamPointsStr
 				+ handsStr
 				+ foldStr
