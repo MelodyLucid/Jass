@@ -84,6 +84,10 @@ final public class Match {
 			}
 			winner = (winner + starter) % 4;
 			
+			if (playerHand.isEmpty()) {
+				updatedFoldPoints += 5;
+			}
+			
 			int[] updatedTeamPoints = Arrays.copyOf(teamPoints, 2);
 			updatedTeamPoints[(winner == 0)  || (winner == 2) ? 0 : 1] += updatedFoldPoints;
 			
@@ -96,6 +100,18 @@ final public class Match {
 		}
 		
 		return new Match(updatedHands, updatedFold, trumpSuit, updatedFoldPoints, teamPoints, (turn+1) % 4, starter);
+	}
+	
+	public Match getInstanceFor(int player) {
+		List<CardList> visibleHands = new ArrayList<CardList>(4);
+		for (int i = 0; i < hands.size(); i++) {
+			if (i == player) {
+				visibleHands.add(hands.get(i));
+			} else {
+				visibleHands.add(hands.get(i).hide());
+			}
+		}
+		return new Match(visibleHands, fold, trumpSuit, foldPoints, teamPoints, turn, starter);
 	}
 	
 	public CardList getHand(int player) {

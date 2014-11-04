@@ -155,11 +155,12 @@ public enum Card {
 		@Override
 		public String toString() {
 			switch (cardValue) {
-				case 10: return "10";
+				case 10 : return "10";
 				case 11 : return "J ";
 				case 12 : return "Q ";
 				case 13 : return "K ";
 				case 14 : return "A ";
+				case -1 : return "??";
 				default: return Integer.toString(cardValue) + " ";
 			}
 		}
