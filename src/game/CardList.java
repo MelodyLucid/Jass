@@ -32,14 +32,6 @@ final public class CardList extends AbstractList<Card> {
 		return cardlist.size();
 	}
 	
-	public boolean contains(Card c) {
-		return cardlist.contains(c);
-	}
-	
-	public boolean isEmpty() {
-		return cardlist.isEmpty();
-	}
-	
 	public CardList addCard(Card c) {
 		ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
 		tmp.add(c);
@@ -110,29 +102,6 @@ final public class CardList extends AbstractList<Card> {
 			str += c.toString() + ", ";
 		}
 		return str.substring(0, str.length()-2) + "]";
-	}
-	
-	@Override
-	public boolean equals(Object o) {
-		if (o == null || o.getClass() != this.getClass()) {
-			return false;
-		}
-		
-		CardList that = (CardList) o;
-		
-		if (that.size() != this.size()) {
-			return false;
-		}
-		for (int i = 0; i < size(); i++) {
-			Card c1 = this.get(i);
-			Card c2 = that.get(i);
-			
-			if (!c1.equals(c2)) {
-				return false;
-			}
-		}
-		
-		return true;
 	}
 
 }
