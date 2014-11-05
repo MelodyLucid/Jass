@@ -17,8 +17,8 @@ final public class Match {
 	private final int turn;
 	private final int starter;
 	
-	public Match(CardSuit trumpSuit, int turn, CardList[] hands) {
-		this(Arrays.asList(hands), new CardList(), trumpSuit, 0, new int[] {0, 0}, turn, turn);
+	public Match(CardSuit trumpSuit, int turn, List<CardList> hands) {
+		this(hands, new CardList(), trumpSuit, 0, new int[] {0, 0}, turn, turn);
 	}
 	
 	public Match(List<CardList> hands, CardList fold, CardSuit trumpSuit, int foldPoints, int[] teamPoints, int turn, int starter) {

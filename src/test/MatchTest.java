@@ -4,17 +4,18 @@ import static org.junit.Assert.*;
 import game.Card;
 import game.Card.CardSuit;
 import game.CardList;
-import game.CardListHelper;
 import game.Match;
 
 import org.junit.Test;
+
+import java.util.List;
 
 public class MatchTest {
 
 	@Test
 	public void simulateBasicMatch() {
 		
-		CardList[] hands = CardListHelper.dealCards(CardListHelper.createBasicDeck());
+		List<CardList> hands = CardList.getBasic().deal();
 		
 		Match m = new Match(CardSuit.HEARTS, 0, hands);
 		m = m.update(Card.SIX_OF_HEARTS);
@@ -67,16 +68,16 @@ public class MatchTest {
 	
 	@Test
 	public void matchInstanceForMethod() {
-		CardList[] hands = CardListHelper.dealCards(CardListHelper.createBasicDeck());
+		List<CardList> hands = CardList.getBasic().deal();
 		
 		Match m = new Match(CardSuit.HEARTS, 0, hands);
 		
 		System.out.println("=========== Match.instanceFor(i) ============");
-		for (int i = 0; i < hands.length; i++) {
+		for (int i = 0; i < hands.size(); i++) {
 			Match visible = m.getInstanceFor(i);
 			for (int j = 0; j < 4; j++) {
 				if (i == j) {
-					assertEquals(visible.getHand(j), hands[j]);
+					assertEquals(visible.getHand(j), hands.get(j));
 					System.out.println(visible.getHand(j));
 				} else {
 					CardList otherPlayerHand = visible.getHand(j);

@@ -5,9 +5,9 @@ import game.Card;
 import game.Card.CardSuit;
 import game.Card.CardValue;
 import game.CardList;
-import game.CardListHelper;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import org.junit.Test;
@@ -130,7 +130,7 @@ public class CardListTest {
 	
 	@Test
 	public void cardListToStringMethod() {
-		CardList cl = CardListHelper.createBasicDeck();
+		CardList cl = CardList.getBasic();
 		System.out.println("=== Ordered version ===");
 		System.out.println(cl);
 		
@@ -139,7 +139,7 @@ public class CardListTest {
 				" 6 \u2663, 7 \u2663, 8 \u2663, 9 \u2663, 10\u2663, J \u2663, Q \u2663, K \u2663, A \u2663," +
 				" 6 \u2666, 7 \u2666, 8 \u2666, 9 \u2666, 10\u2666, J \u2666, Q \u2666, K \u2666, A \u2666]");
 		
-		cl = CardListHelper.shuffleCardList(cl);
+		cl = cl.shuffled();
 		System.out.println("\n=== Shuffled version ===");
 		System.out.println(cl);
 	}
@@ -151,13 +151,13 @@ public class CardListTest {
 	
 	@Test
 	public void cardListEqualsMethod() {
-		CardList cl1 = CardListHelper.createBasicDeck();
-		CardList cl2 = CardListHelper.createBasicDeck();
+		CardList cl1 = CardList.getBasic();
+		CardList cl2 = CardList.getBasic();
 		
 		assertTrue(cl1.equals(cl2));
 		
-		cl1 = CardListHelper.shuffleCardList(cl1);
-		cl2 = CardListHelper.shuffleCardList(cl2);
+		cl1 = cl1.shuffled();
+		cl2 = cl2.shuffled();
 		
 		assertFalse(cl1.equals(cl2));
 	}
@@ -183,7 +183,7 @@ public class CardListTest {
 	 */
 	@Test
 	public void cardListSwapCardsMethod() {
-		CardList cl = CardListHelper.createBasicDeck();
+		CardList cl = CardList.getBasic();
 		Random rdn = new Random();
 		int index1 = rdn.nextInt(cl.size());
 		int index2 = rdn.nextInt(cl.size());
@@ -208,7 +208,7 @@ public class CardListTest {
 	 */
 	@Test
 	public void cardListHideMethod() {
-		CardList deck = CardListHelper.createBasicDeck();
+		CardList deck = CardList.getBasic();
 		CardList hiddenDeck = deck.hidden();
 		
 		for (Card card : hiddenDeck) {
@@ -221,10 +221,10 @@ public class CardListTest {
 	 */
 	@Test(expected = UnsupportedOperationException.class)
 	public void cardListHelperSortCardList() {
-		CardList deck = CardListHelper.createBasicDeck();
-		CardList shuffle = CardListHelper.shuffleCardList(deck);
+		CardList deck = CardList.getBasic();
+		CardList shuffle = deck.shuffled();
 		
-		CardList sorted = CardListHelper.sortCardList(shuffle);
+		CardList sorted = shuffle.sorted();
 		assertEquals(deck, sorted);
 		
 		Collections.sort(shuffle);	// should not be supported
@@ -235,7 +235,7 @@ public class CardListTest {
 	 */
 	@Test
 	public void cardListHelperCreateDeck() {
-		CardList deck = CardListHelper.createBasicDeck();
+		CardList deck = CardList.getBasic();
 		assertEquals(36, deck.size());
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 9; j++) {
@@ -250,8 +250,7 @@ public class CardListTest {
 	 */
 	@Test
 	public void cardListHelperShuffle() {
-		CardList deck = CardListHelper.createBasicDeck();
-		deck = CardListHelper.shuffleCardList(deck);
+		CardList deck = CardList.getBasic().shuffled();
 		assertEquals(36, deck.size());
 		int count = 0;
 		for (int i = 0; i < 4; i++) {
@@ -272,8 +271,8 @@ public class CardListTest {
 	 */
 	@Test
 	public void cardListHelperDealHands() {
-		CardList deck = CardListHelper.createBasicDeck();
-		CardList[] hands = CardListHelper.dealCards(deck);
+		CardList deck = CardList.getBasic();
+		List<CardList> hands = deck.deal();
 		
 		for (CardList hand : hands) {
 			System.out.println(hand);
@@ -282,7 +281,7 @@ public class CardListTest {
 		System.out.println();
 		
 		CardList nineCardsDeck = deck.take(0, 9);
-		hands = CardListHelper.dealCards(nineCardsDeck);
+		hands = nineCardsDeck.deal();
 		
 		for (CardList hand : hands) {
 			System.out.println(hand);
@@ -290,7 +289,7 @@ public class CardListTest {
 		System.out.println();
 		
 		CardList sevenCardsDeck = deck.take(9, 16);
-		hands = CardListHelper.dealCards(sevenCardsDeck);
+		hands = sevenCardsDeck.deal();
 		
 		for (CardList hand : hands) {
 			System.out.println(hand);

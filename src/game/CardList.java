@@ -4,7 +4,13 @@ import java.util.*;
 
 final public class CardList extends AbstractList<Card> {
 
-	final private List<Card> cardlist;
+    private static final CardList basic = new CardList(Card.values());
+
+    public static CardList getBasic() {
+        return basic;
+    }
+
+    final private List<Card> cardlist;
 
     private CardList(List<Card> cards, int dummy) {
         cardlist = Collections.unmodifiableList(cards);
@@ -88,8 +94,7 @@ final public class CardList extends AbstractList<Card> {
 	public CardList take(int fromIndex, int toIndex) {
         int f = Math.max(Math.min(fromIndex, toIndex), 0);
         int t = Math.min(Math.max(fromIndex, toIndex), cardlist.size());
-		ArrayList<Card> tmp = new ArrayList<Card>(cardlist.subList(f, t));
-		return new CardList(tmp, 0);
+		return new CardList(cardlist.subList(f, t), 0);
 	}
 
     public CardList take(int count) {
@@ -106,6 +111,14 @@ final public class CardList extends AbstractList<Card> {
 
     public CardList tail() {
         return drop(1);
+    }
+
+    public Card last() {
+        return cardlist.isEmpty() ? null : cardlist.get(cardlist.size() - 1);
+    }
+
+    public CardList init() {
+        return take(cardlist.size() - 1);
     }
 
     public List<CardList> split(int count) {
@@ -133,6 +146,44 @@ final public class CardList extends AbstractList<Card> {
         return tmp;
     }
 
+    public List<CardList> deal() {
+        List<CardList> hands = new ArrayList<CardList>(4);
+        for (int i = 0; i < hands.size(); i++) {
+            hands.add(new CardList());
+        }
+
+        if (size() > 11) {
+            int i = 0, j = 0;
+            for (; j < size()-2; j += 3) {
+                CardList threeCards = take(j, j + 3);
+                hands.set(i, hands.get(i).added(threeCards));
+                i = (i + 1) % 4;
+            }
+            for (; j < size(); j++) {
+                hands.set(i, hands.get(i).added(get(j)));
+                i = (i + 1) % 4;
+            }
+            return hands;
+        }
+        if (size() < 8) {
+            int i = 0;
+            for (Card card : this) {
+                hands.set(i, hands.get(i).added(card));
+                i = (i + 1) % 4;
+            }
+
+            return hands;
+        }
+        int i = 0, j = 0;
+        for (; j < size()-1; j += 2) {
+            CardList twoCards = take(j, j + 2);
+            hands.set(i, hands.get(i).added(twoCards));
+            i = (i + 1) % 4;
+        }
+        hands.set(i, hands.get(i).added(get(j)));
+        return hands;
+    }
+
     public CardList shuffled() {
         ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
         Collections.shuffle(tmp);
@@ -142,6 +193,12 @@ final public class CardList extends AbstractList<Card> {
     public CardList reversed() {
         ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
         Collections.reverse(tmp);
+        return new CardList(tmp, 0);
+    }
+
+    public CardList sorted() {
+        ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
+        Collections.sort(tmp);
         return new CardList(tmp, 0);
     }
 	
