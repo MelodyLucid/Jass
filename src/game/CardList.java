@@ -13,6 +13,8 @@ final public class CardList extends AbstractList<Card> {
 	final private List<Card> cardlist;
 
 	private CardList(List<Card> cards, int dummy) {
+        if (cards.contains(null))
+            throw new NullPointerException();
 		cardlist = Collections.unmodifiableList(cards);
 	}
 	
@@ -33,8 +35,35 @@ final public class CardList extends AbstractList<Card> {
 	public int size() {
 		return cardlist.size();
 	}
-	
-	public CardList added(Card c) {
+
+    @Override
+    public boolean contains(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (o instanceof Card) {
+            return super.contains(o);
+        }
+        if (o instanceof Card.CardSuit) {
+            for (Card c : cardlist) {
+                if (c.getSuit() == o) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if (o instanceof Card.CardValue) {
+            for (Card c : cardlist) {
+                if (c.getValue() == o) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return false;
+    }
+
+    public CardList added(Card c) {
 		ArrayList<Card> tmp = new ArrayList<Card>(cardlist.size() + 1);
 		tmp.addAll(cardlist);
 		tmp.add(c);
