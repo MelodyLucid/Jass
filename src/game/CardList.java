@@ -4,7 +4,7 @@ import java.util.*;
 
 final public class CardList extends AbstractList<Card> {
 
-	private static final CardList basic = new CardList(Arrays.copyOf(Card.values(), Card.TOTAL_NUMBER));
+	private static final CardList basic = new CardList(Arrays.asList(Card.values()));
 
 	public static CardList getBasic() {
 		return basic;
@@ -23,7 +23,7 @@ final public class CardList extends AbstractList<Card> {
 	public CardList(Card... cards) {
 		this(Arrays.asList(cards));
 	}
-	
+
 	@Override
 	public Card get(int i) {
 		return cardlist.get(i);
@@ -60,25 +60,9 @@ final public class CardList extends AbstractList<Card> {
 		return new CardList(tmp, 0);
 	}
 	
-	public CardList swapped(int index1, int index2) {
-		if (index1 < 0 || index1 > size() || index2 < 0 || index2 > size()) {
-			throw new IndexOutOfBoundsException("Invalid indexes: " + index1 + ", " + index2
-					+ " expected range: [0, " + size() +"]");
-		}
-		if (index1 == index2) {
-			return this;
-		}
-		ArrayList<Card> tmp = new ArrayList<Card>();
-		for (int i = 0; i < size(); i++) {
-			if (i == index1) {
-				tmp.add(get(index2));
-			} else if (i == index2) {
-				tmp.add(get(index1));
-			} else {
-				tmp.add(get(i));
-			}
-		}
-		
+	public CardList swapped(int i, int j) {
+        ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
+        Collections.swap(tmp, i, j);
 		return new CardList(tmp, 0);
 	}
 	
@@ -201,11 +185,64 @@ final public class CardList extends AbstractList<Card> {
 		return new CardList(tmp, 0);
 	}
 
+    public CardList rotated(int n) {
+        ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
+        Collections.rotate(tmp, n);
+        return new CardList(tmp, 0);
+    }
+
 	public CardList sorted() {
 		ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
 		Collections.sort(tmp);
 		return new CardList(tmp, 0);
 	}
+
+    public Card min() {
+        return cardlist.isEmpty() ? null : Collections.min(cardlist);
+    }
+
+    public Card max() {
+        return cardlist.isEmpty() ? null : Collections.max(cardlist);
+    }
+
+    public int frequency(Card c) {
+        return Collections.frequency(cardlist, c);
+    }
+
+    public CardList distinct() {
+        ArrayList<Card> tmp = new ArrayList<Card>(cardlist.size());
+        for (Card c : cardlist) {
+            if (!tmp.contains(c)) {
+                tmp.add(c);
+            }
+        }
+        return new CardList(tmp, 0);
+    }
+
+    public CardList union(Collection<Card> col) {
+        ArrayList<Card> tmp = new ArrayList<Card>(cardlist.size());
+        for (Card c : cardlist) {
+            if (!tmp.contains(c)) {
+                tmp.add(c);
+            }
+        }
+        for (Card c : col) {
+            if (!tmp.contains(c)) {
+                tmp.add(c);
+            }
+        }
+        return new CardList(tmp, 0);
+    }
+
+    public CardList intersection(Collection<Card> col) {
+        ArrayList<Card> tmp = new ArrayList<Card>(cardlist.size());
+        for (Card c : cardlist) {
+            if (!tmp.contains(c) && col.contains(c)) {
+                tmp.add(c);
+            }
+        }
+        return new CardList(tmp, 0);
+    }
 	
 	@Override
 	public String toString() {
@@ -216,7 +253,7 @@ final public class CardList extends AbstractList<Card> {
 		for (Card c : cardlist) {
 			str += c.toString() + ", ";
 		}
-		return str.substring(0, str.length()-2) + "]";
+		return str.substring(0, str.length() - 2) + "]";
 	}
 
 }
