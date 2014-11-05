@@ -4,7 +4,7 @@ import java.util.*;
 
 final public class CardList extends AbstractList<Card> {
 
-    private static final CardList basic = new CardList(Card.values());
+    private static final CardList basic = new CardList(Arrays.copyOf(Card.values(), Card.TOTAL_NUMBER));
 
     public static CardList getBasic() {
         return basic;
@@ -148,7 +148,7 @@ final public class CardList extends AbstractList<Card> {
 
     public List<CardList> deal() {
         List<CardList> hands = new ArrayList<CardList>(4);
-        for (int i = 0; i < hands.size(); i++) {
+        for (int i = 0; i < 4; i++) {
             hands.add(new CardList());
         }
 

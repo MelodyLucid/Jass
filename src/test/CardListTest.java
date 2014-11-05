@@ -104,7 +104,7 @@ public class CardListTest {
 		cl = cl.removed(Card.NINE_OF_DIAMONDS);
 		assertFalse(cl.contains(Card.NINE_OF_DIAMONDS));
 		
-		cl.removed(Card.ACE_OF_CLUBS);	// should not be supported
+		cl.remove(Card.ACE_OF_CLUBS);	// should not be supported
 	}
 	
 	/**
