@@ -1,6 +1,6 @@
 package game;
 
-import game.Card.CardSuit;
+import game.Card.Suit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,19 +9,21 @@ import java.util.List;
 
 final public class Match {
 
+	// TODO real names
 	private final List<CardList> hands;
 	private final CardList fold;
-	private final CardSuit trumpSuit;
+	private final Suit trumpSuit;
 	private final int foldPoints;
 	private final int[] teamPoints;
 	private final int turn;
 	private final int starter;
+	// TODO hasSchibered, history
 	
-	public Match(CardSuit trumpSuit, int turn, List<CardList> hands) {
+	public Match(Suit trumpSuit, int turn, List<CardList> hands) {
 		this(hands, new CardList(), trumpSuit, 0, new int[] {0, 0}, turn, turn);
 	}
 	
-	public Match(List<CardList> hands, CardList fold, CardSuit trumpSuit, int foldPoints, int[] teamPoints, int turn, int starter) {
+	public Match(List<CardList> hands, CardList fold, Suit trumpSuit, int foldPoints, int[] teamPoints, int turn, int starter) {
 		if (hands == null || fold == null || teamPoints == null) {
 			throw new NullPointerException();
 		}
@@ -50,17 +52,39 @@ final public class Match {
 		this.starter = starter;
 	}
 	
+	public static Match createFirstMatch() {
+		List<CardList> hands = CardList.getBasic().deal();
+		int starter = 0;
+		for (; starter < hands.size(); starter++) {
+			if (hands.get(starter).contains(Card.SEVEN_OF_DIAMONDS)) {
+				break;
+			}
+		}
+		
+		return new Match(Suit.UNKNOWN, starter, hands);
+	}
+	
+	public Match setUp(Suit trumpSuit) {
+		if (this.trumpSuit != Suit.UNKNOWN) {
+			throw new IllegalStateException("Match already has trump suit: " + this.trumpSuit);
+		}
+		return new Match(trumpSuit, starter, hands);
+	}
+	
 	public Match update(Card cardPlayed) {
 		if (isOver()) {
 			return this;
 		}
+		if (trumpSuit == Suit.UNKNOWN) {
+			throw new IllegalStateException("Trump suit has not been chosen.");
+		}
 		if (cardPlayed == null) {
 			throw new NullPointerException();
 		}
-		CardList playerHand = hands.get(turn);
-		if (!playerHand.contains(cardPlayed)) {
-			throw new IllegalArgumentException("Player " + turn + " does not have card " + cardPlayed);
+		if (!isLegal(cardPlayed)) {
+			throw new IllegalArgumentException("Player " + turn + " cannot play card " + cardPlayed);
 		}
+		CardList playerHand = hands.get(turn);
 		playerHand = playerHand.removed(cardPlayed);
 		
 		List<CardList> updatedHands = new ArrayList<CardList>(hands);
@@ -102,6 +126,44 @@ final public class Match {
 		return new Match(updatedHands, updatedFold, trumpSuit, updatedFoldPoints, teamPoints, (turn+1) % 4, starter);
 	}
 	
+	// Rules :
+	//  1. You can only play a card that you possess
+	//  2. You must follow the leading suit
+	//   2a. But, you can break with a trump at anytime
+	//    2a-i.   But, you can't break under a higher-trump
+	//    2a-ii.  Unless it's the leading suit
+	//    2a-iii. Unless you don't have any other card
+	//  3. If you can't, you can discard any other non-trump card
+	
+	public boolean isLegal(Card cardPlayed) {
+		CardList playerHand = hands.get(turn);
+		if (!playerHand.contains(cardPlayed)) {
+			return false;
+		}
+		
+		if (!fold.isEmpty()) {
+			Suit leadingSuit = fold.get(0).getSuit();
+			if (cardPlayed.getSuit() == leadingSuit) {
+				return true;
+			}
+			if (cardPlayed.getSuit() == trumpSuit) {
+				Card bestTrump = fold.max(trumpSuit);
+				if (bestTrump != null && bestTrump.compareTo(cardPlayed) < 1) {
+					// the player must not contain any other suit
+					// he does not contain any greater card
+					if (playerHand.withSuit(trumpSuit).equals(playerHand) && bestTrump.compareTo(playerHand.max(trumpSuit)) < 1) {
+						return false;
+					}
+				}
+			}
+			if (playerHand.contains(leadingSuit)) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
 	public Match getInstanceFor(int player) {
 		List<CardList> visibleHands = new ArrayList<CardList>(4);
 		for (int i = 0; i < hands.size(); i++) {
@@ -129,11 +191,19 @@ final public class Match {
 		return foldPoints;
 	}
 	
+	public Suit getTrumpSuit() {
+		return trumpSuit;
+	}
+	
 	public int getTeamPoints(int team) {
 		if (team < 0 || team > 2) {
 			return -1;
 		}
 		return teamPoints[team];
+	}
+	
+	public int getTurn() {
+		return turn;
 	}
 	
 	public boolean isOver() {
@@ -145,7 +215,7 @@ final public class Match {
 		return true;
 	}
 	
-	public CardComparator getCardComparator(CardSuit enteringSuit) {
+	public CardComparator getCardComparator(Suit enteringSuit) {
 		return new CardComparator(enteringSuit, trumpSuit);
 	}
 	

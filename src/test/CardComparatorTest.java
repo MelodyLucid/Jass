@@ -2,8 +2,8 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import game.Card;
-import game.Card.CardSuit;
-import game.Card.CardValue;
+import game.Card.Suit;
+import game.Card.Value;
 import game.CardComparator;
 
 import org.junit.Test;
@@ -18,17 +18,17 @@ import org.junit.Test;
 public class CardComparatorTest {
 
 	private CardComparator cc;
-	private final static CardSuit enteringSuit = CardSuit.HEARTS;
-	private final static CardSuit trumpSuit = CardSuit.SPADES;
-	private final static CardSuit otherSuit = CardSuit.CLUBS;
-	private final static CardValue greaterValue = CardValue.KING;
-	private final static CardValue lesserValue = CardValue.QUEEN;
+	private final static Suit enteringSuit = Suit.HEARTS;
+	private final static Suit trumpSuit = Suit.SPADES;
+	private final static Suit otherSuit = Suit.CLUBS;
+	private final static Value greaterValue = Value.KING;
+	private final static Value lesserValue = Value.QUEEN;
 	
 	public void loadDiffSuitComparator() {
 		cc = new CardComparator(enteringSuit, trumpSuit);
 	}
 	
-	public void loadSameSuitComparator(CardSuit suit) {
+	public void loadSameSuitComparator(Suit suit) {
 		cc = new CardComparator(suit, suit);
 	}
 	
@@ -230,7 +230,7 @@ public class CardComparatorTest {
 	
 	@Test
 	public void cornerCases() {
-		Card c1 = Card.getCard(trumpSuit, CardValue.JACK);
+		Card c1 = Card.getCard(trumpSuit, Value.JACK);
 		
 		loadDiffSuitComparator();
 		Card c2;
@@ -238,38 +238,38 @@ public class CardComparatorTest {
 			if (i == 5) {
 				continue; // Buur value
 			}
-			c2 = Card.getCard(trumpSuit, CardValue.values()[i]);
+			c2 = Card.getCard(trumpSuit, Value.values()[i]);
 			assertEquals(cc.compare(c1, c2), +1);
 		}
 		
-		c1 = Card.getCard(trumpSuit, CardValue.NINE);
+		c1 = Card.getCard(trumpSuit, Value.NINE);
 		
 		for (int i = 0; i < 9; i++) {
 			if (i == 5 || i == 3) {
 				continue; // Buur or nel values
 			}
-			c2 = Card.getCard(trumpSuit, CardValue.values()[i]);
+			c2 = Card.getCard(trumpSuit, Value.values()[i]);
 			assertEquals(cc.compare(c1, c2), +1);
 		}
 		
-		c1 = Card.getCard(trumpSuit, CardValue.ACE);
+		c1 = Card.getCard(trumpSuit, Value.ACE);
 		
 		for (int i = 0; i < 9; i++) {
 			if (i == 5 || i == 3 || i == 8) {
 				continue; // Buur, nel or ace values
 			}
-			c2 = Card.getCard(trumpSuit, CardValue.values()[i]);
+			c2 = Card.getCard(trumpSuit, Value.values()[i]);
 			assertEquals(cc.compare(c1, c2), +1);
 		}
 		
-		c1 = Card.getCard(trumpSuit, CardValue.SIX);
+		c1 = Card.getCard(trumpSuit, Value.SIX);
 		
 		for (int i = 0; i < 4; i++) {
 			if (i == 1) {
 				continue;
 			}
 			for (int j = 0; j < 9; j++) {
-				c2 = Card.getCard(CardSuit.values()[i], CardValue.values()[j]);
+				c2 = Card.getCard(Suit.values()[i], Value.values()[j]);
 				assertEquals(cc.compare(c1, c2), +1);
 			}
 		}

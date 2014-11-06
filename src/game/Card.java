@@ -1,54 +1,71 @@
 package game;
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum Card {
 
-	SIX_OF_HEARTS(CardSuit.HEARTS, CardValue.SIX),
-	SEVEN_OF_HEARTS(CardSuit.HEARTS, CardValue.SEVEN),
-	EIGHT_OF_HEARTS(CardSuit.HEARTS, CardValue.EIGHT),
-	NINE_OF_HEARTS(CardSuit.HEARTS, CardValue.NINE),
-	TEN_OF_HEARTS(CardSuit.HEARTS, CardValue.TEN),
-	JACK_OF_HEARTS(CardSuit.HEARTS, CardValue.JACK),
-	QUEEN_OF_HEARTS(CardSuit.HEARTS, CardValue.QUEEN),
-	KING_OF_HEARTS(CardSuit.HEARTS, CardValue.KING),
-	ACE_OF_HEARTS(CardSuit.HEARTS, CardValue.ACE),
+	SIX_OF_HEARTS(Suit.HEARTS, Value.SIX),
+	SEVEN_OF_HEARTS(Suit.HEARTS, Value.SEVEN),
+	EIGHT_OF_HEARTS(Suit.HEARTS, Value.EIGHT),
+	NINE_OF_HEARTS(Suit.HEARTS, Value.NINE),
+	TEN_OF_HEARTS(Suit.HEARTS, Value.TEN),
+	JACK_OF_HEARTS(Suit.HEARTS, Value.JACK),
+	QUEEN_OF_HEARTS(Suit.HEARTS, Value.QUEEN),
+	KING_OF_HEARTS(Suit.HEARTS, Value.KING),
+	ACE_OF_HEARTS(Suit.HEARTS, Value.ACE),
 	
-	SIX_OF_SPADES(CardSuit.SPADES, CardValue.SIX),
-	SEVEN_OF_SPADES(CardSuit.SPADES, CardValue.SEVEN),
-	EIGHT_OF_SPADES(CardSuit.SPADES, CardValue.EIGHT),
-	NINE_OF_SPADES(CardSuit.SPADES, CardValue.NINE),
-	TEN_OF_SPADES(CardSuit.SPADES, CardValue.TEN),
-	JACK_OF_SPADES(CardSuit.SPADES, CardValue.JACK),
-	QUEEN_OF_SPADES(CardSuit.SPADES, CardValue.QUEEN),
-	KING_OF_SPADES(CardSuit.SPADES, CardValue.KING),
-	ACE_OF_SPADES(CardSuit.SPADES, CardValue.ACE),
+	SIX_OF_SPADES(Suit.SPADES, Value.SIX),
+	SEVEN_OF_SPADES(Suit.SPADES, Value.SEVEN),
+	EIGHT_OF_SPADES(Suit.SPADES, Value.EIGHT),
+	NINE_OF_SPADES(Suit.SPADES, Value.NINE),
+	TEN_OF_SPADES(Suit.SPADES, Value.TEN),
+	JACK_OF_SPADES(Suit.SPADES, Value.JACK),
+	QUEEN_OF_SPADES(Suit.SPADES, Value.QUEEN),
+	KING_OF_SPADES(Suit.SPADES, Value.KING),
+	ACE_OF_SPADES(Suit.SPADES, Value.ACE),
 	
-	SIX_OF_CLUBS(CardSuit.CLUBS, CardValue.SIX),
-	SEVEN_OF_CLUBS(CardSuit.CLUBS, CardValue.SEVEN),
-	EIGHT_OF_CLUBS(CardSuit.CLUBS, CardValue.EIGHT),
-	NINE_OF_CLUBS(CardSuit.CLUBS, CardValue.NINE),
-	TEN_OF_CLUBS(CardSuit.CLUBS, CardValue.TEN),
-	JACK_OF_CLUBS(CardSuit.CLUBS, CardValue.JACK),
-	QUEEN_OF_CLUBS(CardSuit.CLUBS, CardValue.QUEEN),
-	KING_OF_CLUBS(CardSuit.CLUBS, CardValue.KING),
-	ACE_OF_CLUBS(CardSuit.CLUBS, CardValue.ACE),
+	SIX_OF_CLUBS(Suit.CLUBS, Value.SIX),
+	SEVEN_OF_CLUBS(Suit.CLUBS, Value.SEVEN),
+	EIGHT_OF_CLUBS(Suit.CLUBS, Value.EIGHT),
+	NINE_OF_CLUBS(Suit.CLUBS, Value.NINE),
+	TEN_OF_CLUBS(Suit.CLUBS, Value.TEN),
+	JACK_OF_CLUBS(Suit.CLUBS, Value.JACK),
+	QUEEN_OF_CLUBS(Suit.CLUBS, Value.QUEEN),
+	KING_OF_CLUBS(Suit.CLUBS, Value.KING),
+	ACE_OF_CLUBS(Suit.CLUBS, Value.ACE),
 	
-	SIX_OF_DIAMONDS(CardSuit.DIAMONDS, CardValue.SIX),
-	SEVEN_OF_DIAMONDS(CardSuit.DIAMONDS, CardValue.SEVEN),
-	EIGHT_OF_DIAMONDS(CardSuit.DIAMONDS, CardValue.EIGHT),
-	NINE_OF_DIAMONDS(CardSuit.DIAMONDS, CardValue.NINE),
-	TEN_OF_DIAMONDS(CardSuit.DIAMONDS, CardValue.TEN),
-	JACK_OF_DIAMONDS(CardSuit.DIAMONDS, CardValue.JACK),
-	QUEEN_OF_DIAMONDS(CardSuit.DIAMONDS, CardValue.QUEEN),
-	KING_OF_DIAMONDS(CardSuit.DIAMONDS, CardValue.KING),
-	ACE_OF_DIAMONDS(CardSuit.DIAMONDS, CardValue.ACE),
+	SIX_OF_DIAMONDS(Suit.DIAMONDS, Value.SIX),
+	SEVEN_OF_DIAMONDS(Suit.DIAMONDS, Value.SEVEN),
+	EIGHT_OF_DIAMONDS(Suit.DIAMONDS, Value.EIGHT),
+	NINE_OF_DIAMONDS(Suit.DIAMONDS, Value.NINE),
+	TEN_OF_DIAMONDS(Suit.DIAMONDS, Value.TEN),
+	JACK_OF_DIAMONDS(Suit.DIAMONDS, Value.JACK),
+	QUEEN_OF_DIAMONDS(Suit.DIAMONDS, Value.QUEEN),
+	KING_OF_DIAMONDS(Suit.DIAMONDS, Value.KING),
+	ACE_OF_DIAMONDS(Suit.DIAMONDS, Value.ACE),
 	
-	UNKNOWN_CARD(CardSuit.UNKNOWN, CardValue.UNKNOWN);
+	UNKNOWN_CARD(Suit.UNKNOWN, Value.UNKNOWN);
 	
 	final public static int TOTAL_NUMBER = values().length - 1;
-	final private CardSuit suit;
-	final private CardValue value;
+	final private Suit suit;
+	final private Value value;
 	
-	private Card(CardSuit suit, CardValue value) {
+	public static Card getCard(Suit suit, Value value) {
+		for (int i = 0; i < values().length; i++) {
+			if (values()[i].getSuit() == suit && values()[i].getValue() == value) {
+				return values()[i];
+			}
+		}
+		return UNKNOWN_CARD;
+	}
+	
+	public static CardList getValid() {
+		List<Card> deck = Arrays.asList(Arrays.copyOf(values(), TOTAL_NUMBER));
+		return new CardList(deck);
+	}
+
+	private Card(Suit suit, Value value) {
 		this.suit = suit;
 		this.value = value;
 	}
@@ -83,11 +100,11 @@ public enum Card {
 		}
 	}
 	
-	public CardValue getValue() {
+	public Value getValue() {
 		return value;
 	}
 	
-	public CardSuit getSuit() {
+	public Suit getSuit() {
 		return suit;
 	}
 	
@@ -95,24 +112,19 @@ public enum Card {
 		return value.name() + " of " + suit.name();
 	}
 	
-	public static Card getCard(CardSuit suit, CardValue value) {
-		for (int i = 0; i < values().length; i++) {
-			if (values()[i].getSuit() == suit && values()[i].getValue() == value) {
-				return values()[i];
-			}
-		}
-		return UNKNOWN_CARD;
+	@Override
+	public String toString() {
+		return value.toString() + suit.toString().charAt(0);
 	}
-	
-	
-	public enum CardSuit {
+
+	public enum Suit {
 		HEARTS(0), SPADES(1), CLUBS(2), DIAMONDS(3),
 		UNKNOWN(-1);
 		
 		final public static int NUMBERS_OF_SUIT = values().length - 1;
 		final private int cardSuit;
 
-		private CardSuit(int suit) {
+		private Suit(int suit) {
 			this.cardSuit = suit;
 		}
 
@@ -140,7 +152,7 @@ public enum Card {
 		}
 	}
 	
-	public enum CardValue {
+	public enum Value {
 		SIX(6), SEVEN(7), EIGHT(8), NINE(9), TEN(10),
 		JACK(11), QUEEN(12), KING(13), ACE(14),
 		UNKNOWN(-1);
@@ -148,7 +160,7 @@ public enum Card {
 		final public static int NUMBERS_OF_VALUES = values().length - 1;
 		final private int cardValue;
 		
-		private CardValue(int value) {
+		private Value(int value) {
 			this.cardValue = value;
 		}
 		
@@ -168,10 +180,5 @@ public enum Card {
 		public int getIntValue() {
 			return cardValue;
 		}
-	}
-	
-	@Override
-	public String toString() {
-		return value.toString() + suit.toString().charAt(0);
 	}
 }

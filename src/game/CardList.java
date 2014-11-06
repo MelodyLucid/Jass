@@ -1,29 +1,31 @@
 package game;
 
+import game.Card.Suit;
+
 import java.util.*;
 
 final public class CardList extends AbstractList<Card> {
 
 	private static final CardList basic = new CardList(Arrays.asList(Card.values()));
+	final private List<Card> cardlist;
 
 	public static CardList getBasic() {
 		return basic;
 	}
 
-	final private List<Card> cardlist;
-
-	private CardList(List<Card> cards, int dummy) {
-        if (cards.contains(null))
-            throw new NullPointerException();
-		cardlist = Collections.unmodifiableList(cards);
-	}
-	
 	public CardList(Collection<Card> list) {
 		this(new ArrayList<Card>(list), 0);
 	}
 
 	public CardList(Card... cards) {
 		this(Arrays.asList(cards));
+	}
+
+	private CardList(List<Card> cards, int dummy) {
+		if (cards.contains(null)) {
+			throw new NullPointerException();
+		}
+		cardlist = Collections.unmodifiableList(cards);
 	}
 
 	@Override
@@ -36,47 +38,47 @@ final public class CardList extends AbstractList<Card> {
 		return cardlist.size();
 	}
 
-    @Override
-    public boolean contains(Object o) {
-        if (o == null) {
-            return false;
-        }
-        if (o instanceof Card) {
-            return super.contains(o);
-        }
-        if (o instanceof Card.CardSuit) {
-            for (Card c : cardlist) {
-                if (c.getSuit() == o) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        if (o instanceof Card.CardValue) {
-            for (Card c : cardlist) {
-                if (c.getValue() == o) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        return false;
-    }
+	@Override
+	public boolean contains(Object o) {
+		if (o == null) {
+			return false;
+		}
+		if (o instanceof Card) {
+			return super.contains(o);
+		}
+		if (o instanceof Card.Suit) {
+			for (Card c : cardlist) {
+				if (c.getSuit() == o) {
+					return true;
+				}
+			}
+			return false;
+		}
+		if (o instanceof Card.Value) {
+			for (Card c : cardlist) {
+				if (c.getValue() == o) {
+					return true;
+				}
+			}
+			return false;
+		}
+		return false;
+	}
 
-    public CardList added(Card c) {
+	public CardList added(Card c) {
 		ArrayList<Card> tmp = new ArrayList<Card>(cardlist.size() + 1);
 		tmp.addAll(cardlist);
 		tmp.add(c);
 		return new CardList(tmp, 0);
 	}
-	
+
 	public CardList added(Collection<Card> col) {
 		ArrayList<Card> tmp = new ArrayList<Card>(cardlist.size() + col.size());
 		tmp.addAll(cardlist);
 		tmp.addAll(col);
 		return new CardList(tmp, 0);
 	}
-	
+
 	public CardList removed(Card c) {
 		ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
 		tmp.remove(c);
@@ -88,13 +90,13 @@ final public class CardList extends AbstractList<Card> {
 		tmp.removeAll(col);
 		return new CardList(tmp, 0);
 	}
-	
+
 	public CardList swapped(int i, int j) {
-        ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
-        Collections.swap(tmp, i, j);
+		ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
+		Collections.swap(tmp, i, j);
 		return new CardList(tmp, 0);
 	}
-	
+
 	public CardList hidden() {
 		int n = size();
 		List<Card> tmp = new ArrayList<Card>(n);
@@ -146,7 +148,7 @@ final public class CardList extends AbstractList<Card> {
 		return tmp;
 	}
 
-	public CardList withSuit(Card.CardSuit suit) {
+	public CardList withSuit(Card.Suit suit) {
 		ArrayList<Card> tmp = new ArrayList<Card>(cardlist.size());
 		for (Card c : cardlist) {
 			if (c.getSuit() == suit) {
@@ -156,9 +158,9 @@ final public class CardList extends AbstractList<Card> {
 		return new CardList(tmp, 0);
 	}
 
-	public Map<Card.CardSuit, CardList> splitBySuit() {
-		Map<Card.CardSuit, CardList> tmp = new TreeMap<Card.CardSuit, CardList>();
-		for (Card.CardSuit s : Card.CardSuit.values()) {
+	public Map<Card.Suit, CardList> splitBySuit() {
+		Map<Card.Suit, CardList> tmp = new TreeMap<Card.Suit, CardList>();
+		for (Card.Suit s : Card.Suit.values()) {
 			tmp.put(s, withSuit(s));
 		}
 		return tmp;
@@ -214,11 +216,11 @@ final public class CardList extends AbstractList<Card> {
 		return new CardList(tmp, 0);
 	}
 
-    public CardList rotated(int n) {
-        ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
-        Collections.rotate(tmp, n);
-        return new CardList(tmp, 0);
-    }
+	public CardList rotated(int n) {
+		ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
+		Collections.rotate(tmp, n);
+		return new CardList(tmp, 0);
+	}
 
 	public CardList sorted() {
 		ArrayList<Card> tmp = new ArrayList<Card>(cardlist);
@@ -226,53 +228,63 @@ final public class CardList extends AbstractList<Card> {
 		return new CardList(tmp, 0);
 	}
 
-    public Card min() {
-        return cardlist.isEmpty() ? null : Collections.min(cardlist);
-    }
+	public Card min() {
+		return cardlist.isEmpty() ? null : Collections.min(cardlist);
+	}
 
-    public Card max() {
-        return cardlist.isEmpty() ? null : Collections.max(cardlist);
-    }
+	public Card max() {
+		return cardlist.isEmpty() ? null : Collections.max(cardlist);
+	}
 
-    public int frequency(Card c) {
-        return Collections.frequency(cardlist, c);
-    }
+	public Card max(Suit suit) {
+		List<Card> withSuit = withSuit(suit);
+		return withSuit.isEmpty() ? null : Collections.max(withSuit);
+	}
 
-    public CardList distinct() {
-        ArrayList<Card> tmp = new ArrayList<Card>(cardlist.size());
-        for (Card c : cardlist) {
-            if (!tmp.contains(c)) {
-                tmp.add(c);
-            }
-        }
-        return new CardList(tmp, 0);
-    }
+	public Card min(Suit suit) {
+		List<Card> withSuit = withSuit(suit);
+		return withSuit.isEmpty() ? null : Collections.min(withSuit);
+	}
 
-    public CardList union(Collection<Card> col) {
-        ArrayList<Card> tmp = new ArrayList<Card>(cardlist.size());
-        for (Card c : cardlist) {
-            if (!tmp.contains(c)) {
-                tmp.add(c);
-            }
-        }
-        for (Card c : col) {
-            if (!tmp.contains(c)) {
-                tmp.add(c);
-            }
-        }
-        return new CardList(tmp, 0);
-    }
+	public int frequency(Card c) {
+		return Collections.frequency(cardlist, c);
+	}
 
-    public CardList intersection(Collection<Card> col) {
-        ArrayList<Card> tmp = new ArrayList<Card>(cardlist.size());
-        for (Card c : cardlist) {
-            if (!tmp.contains(c) && col.contains(c)) {
-                tmp.add(c);
-            }
-        }
-        return new CardList(tmp, 0);
-    }
-	
+	public CardList distinct() {
+		ArrayList<Card> tmp = new ArrayList<Card>(cardlist.size());
+		for (Card c : cardlist) {
+			if (!tmp.contains(c)) {
+				tmp.add(c);
+			}
+		}
+		return new CardList(tmp, 0);
+	}
+
+	public CardList union(Collection<Card> col) {
+		ArrayList<Card> tmp = new ArrayList<Card>(cardlist.size());
+		for (Card c : cardlist) {
+			if (!tmp.contains(c)) {
+				tmp.add(c);
+			}
+		}
+		for (Card c : col) {
+			if (!tmp.contains(c)) {
+				tmp.add(c);
+			}
+		}
+		return new CardList(tmp, 0);
+	}
+
+	public CardList intersection(Collection<Card> col) {
+		ArrayList<Card> tmp = new ArrayList<Card>(cardlist.size());
+		for (Card c : cardlist) {
+			if (!tmp.contains(c) && col.contains(c)) {
+				tmp.add(c);
+			}
+		}
+		return new CardList(tmp, 0);
+	}
+
 	@Override
 	public String toString() {
 		if (isEmpty()) {

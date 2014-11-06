@@ -2,7 +2,7 @@ package test;
 
 import static org.junit.Assert.*;
 import game.Card;
-import game.Card.CardSuit;
+import game.Card.Suit;
 import game.CardList;
 import game.Match;
 
@@ -15,9 +15,9 @@ public class MatchTest {
 	@Test
 	public void simulateBasicMatch() {
 		
-		List<CardList> hands = CardList.getBasic().deal();
+		Match m = new Match(Suit.UNKNOWN, 0, CardList.getBasic().deal());
+		m = m.setUp(Suit.HEARTS);
 		
-		Match m = new Match(CardSuit.HEARTS, 0, hands);
 		m = m.update(Card.SIX_OF_HEARTS);
 		m = m.update(Card.JACK_OF_HEARTS);
 		m = m.update(Card.QUEEN_OF_HEARTS);
@@ -69,8 +69,7 @@ public class MatchTest {
 	@Test
 	public void matchInstanceForMethod() {
 		List<CardList> hands = CardList.getBasic().deal();
-		
-		Match m = new Match(CardSuit.HEARTS, 0, hands);
+		Match m = new Match(Suit.HEARTS, 0, hands);
 		
 		System.out.println("=========== Match.instanceFor(i) ============");
 		for (int i = 0; i < hands.size(); i++) {

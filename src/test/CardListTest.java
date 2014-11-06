@@ -2,8 +2,8 @@ package test;
 
 import static org.junit.Assert.*;
 import game.Card;
-import game.Card.CardSuit;
-import game.Card.CardValue;
+import game.Card.Suit;
+import game.Card.Value;
 import game.CardList;
 
 import java.util.Collections;
@@ -52,9 +52,9 @@ public class CardListTest {
 		assertTrue(cl.contains(Card.NINE_OF_HEARTS));
 		
 		// The set does not contain any spade
-		int n = CardValue.NUMBERS_OF_VALUES;
+		int n = Value.NUMBERS_OF_VALUES;
 		for (int i = 0; i < n; i++) {
-			assertFalse(cl.contains(Card.values()[i+n*CardSuit.SPADES.getIntValue()]));
+			assertFalse(cl.contains(Card.values()[i+n*Suit.SPADES.getIntValue()]));
 		}
 		
 		assertFalse(cl.contains(Card.ACE_OF_HEARTS));
