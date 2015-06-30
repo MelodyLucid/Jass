@@ -6,7 +6,7 @@ import java.util.*;
 
 final public class CardList extends AbstractList<Card> {
 
-	private static final CardList basic = new CardList(Arrays.asList(Card.values()));
+	private static final CardList basic = Card.getValid();
 	final private List<Card> cardlist;
 
 	public static CardList getBasic() {
@@ -185,6 +185,7 @@ final public class CardList extends AbstractList<Card> {
 			}
 			return hands;
 		}
+
 		if (size() < 8) {
 			int i = 0;
 			for (Card card : this) {
@@ -194,6 +195,7 @@ final public class CardList extends AbstractList<Card> {
 
 			return hands;
 		}
+
 		int i = 0, j = 0;
 		for (; j < size() - 1; j += 2) {
 			CardList twoCards = take(j, j + 2);
